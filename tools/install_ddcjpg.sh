@@ -34,10 +34,12 @@ done
 
 # Detect the OS
 os=""
-if [[ -e /etc/debian_version ]]; then
-    os="debian"
-elif [[ -e /etc/redhat-release ]]; then
-    os="redhat"
+if grep -q 'ID=ubuntu' /etc/os-release; then
+    os="ubuntu"
+elif grep -q 'ID=centos' /etc/os-release; then
+    os="centos"
+elif grep -q 'ID="amzn"' /etc/os-release; then
+    os="amazon"
 else
     echo "Unsupported OS"
     exit 1
