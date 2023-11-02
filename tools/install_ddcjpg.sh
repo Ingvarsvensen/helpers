@@ -51,9 +51,15 @@ install_docker_func() {
             sudo apt-get update
             sudo apt-get install -y docker.io
             ;;
-        centos|amazon)
+        centos)
             sudo yum update -y
             sudo yum install docker -y
+            sudo systemctl start docker
+            sudo systemctl enable docker
+            sudo usermod -aG docker $(whoami)
+            ;;
+        amazon)
+            sudo amazon-linux-extras install docker
             sudo systemctl start docker
             sudo systemctl enable docker
             sudo usermod -aG docker $(whoami)
