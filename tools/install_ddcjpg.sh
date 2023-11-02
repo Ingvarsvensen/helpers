@@ -36,10 +36,8 @@ done
 os=""
 if grep -q 'ID=ubuntu' /etc/os-release; then
     os="ubuntu"
-elif grep -q 'ID=centos' /etc/os-release; then
+elif grep -q 'ID=centos' /etc/os-release || grep -q 'ID_LIKE="centos rhel fedora"' /etc/os-release; then
     os="centos"
-elif grep -q 'ID="amzn"' /etc/os-release; then
-    os="amazon"
 else
     echo "Unsupported OS"
     exit 1
