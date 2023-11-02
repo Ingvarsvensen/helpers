@@ -35,26 +35,17 @@ install() {
         sudo yum install -y yum-utils device-mapper-persistent-data lvm2
         sudo yum-config-manager --add-repo https://download.docker.com/linux/centos/docker-ce.repo
         sudo yum install -y docker-ce docker-ce-cli containerd.io
-    fi
+    fi  # Ensure this fi is here to close the above if block
     if ! docker-compose --version; then
         echo -e "${C_LGn}Docker Compose installation...${RES}"
         local docker_compose_version=$(curl -s https://api.github.com/repos/docker/compose/releases/latest | jq -r ".tag_name")
         sudo curl -L "https://github.com/docker/compose/releases/download/${docker_compose_version}/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
         sudo chmod +x /usr/local/bin/docker-compose
-    fi
+    fi  # Ensure this fi is here to close the above if block
     if [ "$dive" = "true" ] && ! rpm -q dive; then
         echo -e "${C_LGn}Dive installation...${RES}"
         # (snipped for brevity, you may need to find or build a .rpm package for Dive)
-    fi
-}
-uninstall() {
-    echo -e "${C_LGn}Docker uninstalling...${RES}"
-    sudo rpm -e dive
-    sudo systemctl stop docker.service docker.socket
-    sudo yum remove -y docker-ce docker-ce-cli containerd.io
-    sudo rm -rf /var/lib/docker
-    sudo groupdel docker
-    # (snipped for brevity, adjust other commands as necessary for yum/dnf)
+    fi  # Ensure this fi is here to close the above if block
 }
 
 # Actions
