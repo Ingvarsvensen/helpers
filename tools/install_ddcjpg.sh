@@ -38,65 +38,87 @@ if grep -q 'ID=ubuntu' /etc/os-release; then
     os="ubuntu"
 elif grep -q 'ID=centos' /etc/os-release || grep -q 'ID_LIKE="centos rhel fedora"' /etc/os-release; then
     os="centos"
+elif grep -q 'ID="amzn"' /etc/os-release; then
+    os="amazon"
 else
     echo "Unsupported OS"
     exit 1
 fi
 
-# Function to install Docker
 install_docker_func() {
-    if [[ $os == "debian" ]]; then
-        sudo apt-get update
-        sudo apt-get install -y docker.io
-    else
-        sudo yum update -y
-        sudo yum install -y docker
-    fi
+    case $os in
+        ubuntu)
+            sudo apt-get update
+            sudo apt-get install -y docker.io
+            ;;
+        centos|amazon)
+            sudo yum update -y
+            sudo yum install docker -y
+            sudo systemctl start docker
+            sudo systemctl enable docker
+            sudo usermod -aG docker $(whoami)
+            ;;
+        *)
+            echo "Unsupported OS for Docker installation"
+            exit 1
+            ;;
+    esac
 }
 
-# Function to install Docker Compose
 install_docker_compose_func() {
-    if [[ $os == "debian" ]]; then
-        sudo apt-get update
-        sudo apt-get install -y docker-compose
-    else
-        sudo yum update -y
-        sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
-        sudo chmod +x /usr/local/bin/docker-compose
-    fi
+    sudo curl -L "https://github.com/docker/compose/releases/latest/download/docker-compose-$(uname -s)-$(uname -m)" -o /usr/local/bin/docker-compose
+    sudo chmod +x /usr/local/bin/docker-compose
 }
 
-# Function to install Java
 install_java_func() {
-    if [[ $os == "debian" ]]; then
-        sudo apt-get update
-        sudo apt-get install -y openjdk-11-jdk
-    else
-        sudo yum update -y
-        sudo yum install -y java-11-openjdk-devel
-    fi
+    case $os in
+        ubuntu)
+            sudo apt-get update
+            sudo apt-get install -y openjdk-11-jdk
+            ;;
+        centos|amazon)
+            sudo yum update -y
+            sudo yum install java-11-openjdk-devel -y
+            ;;
+        *)
+            echo "Unsupported OS for Java installation"
+            exit 1
+            ;;
+    esac
 }
 
-# Function to install Python
 install_python_func() {
-    if [[ $os == "debian" ]]; then
-        sudo apt-get update
-        sudo apt-get install -y python3
-    else
-        sudo yum update -y
-        sudo yum install -y python3
-    fi
+    case $os in
+        ubuntu)
+            sudo apt-get update
+            sudo apt-get install -y python3
+            ;;
+        centos|amazon)
+            sudo yum update -y
+            sudo yum install python3 -y
+            ;;
+        *)
+            echo "Unsupported OS for Python installation"
+            exit 1
+            ;;
+    esac
 }
 
-# Function to install Git
 install_git_func() {
-    if [[ $os == "debian" ]]; then
-        sudo apt-get update
-        sudo apt-get install -y git
-    else
-        sudo yum update -y
-        sudo yum install -y git
-    fi
+    case $os in
+        ubuntu)
+            sudo apt-get update
+            sudo apt-get install -y git
+            ;;
+        centos|amazon)
+            sudo yum update -y
+            sudo yum install git -y
+            ;;
+        *)
+            echo "Unsupported OS for Git installation"
+            exit 1
+            ;;
+    esac
 }
 
 # Install the selected software
